@@ -1,0 +1,41 @@
+{
+  "name": "my-vscode-extension",
+  "displayName": "rgsk utils",
+  "description": "Personal editor commands that VSCode doesn't ship.",
+  "version": "0.0.1",
+  "publisher": "rgsk",
+  "private": true,
+  "engines": {
+    "vscode": "^1.75.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "main": "./extension.js",
+  "activationEvents": [
+    "onCommand:rgsk.copyFileName"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "rgsk.copyFileName",
+        "title": "Copy File Name",
+        "category": "rgsk"
+      }
+    ],
+    "menus": {
+      "explorer/context": [
+        {
+          "command": "rgsk.copyFileName",
+          "group": "6_copypath@100"
+        }
+      ],
+      "editor/title/context": [
+        {
+          "command": "rgsk.copyFileName",
+          "group": "1_copypath@100"
+        }
+      ]
+    }
+  }
+}
