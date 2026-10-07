@@ -13,13 +13,19 @@
   ],
   "main": "./extension.js",
   "activationEvents": [
-    "onCommand:rgsk.copyFileName"
+    "onCommand:rgsk.copyFileName",
+    "onCommand:rgsk.openChangeHere"
   ],
   "contributes": {
     "commands": [
       {
         "command": "rgsk.copyFileName",
         "title": "Copy File Name",
+        "category": "rgsk"
+      },
+      {
+        "command": "rgsk.openChangeHere",
+        "title": "Open Changes Here",
         "category": "rgsk"
       }
     ],

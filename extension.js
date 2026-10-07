@@ -25,7 +25,42 @@ function targetUri(arg) {
   return input?.uri ?? input?.modified;
 }
 
+// git.openChange, but the diff opens scrolled to where the file was, cursor
+// included. The diff's right side is the same working file, so the line
+// numbers carry over as they are. (The reverse, git.openFile, already keeps
+// the position.)
+async function openChangeHere() {
+  const editor = vscode.window.activeTextEditor;
+  if (!editor) {
+    return;
+  }
+  const uri = editor.document.uri.toString();
+  const topLine = editor.visibleRanges[0]?.start.line ?? 0;
+  const selections = editor.selections;
+  await vscode.commands.executeCommand('git.openChange');
+  // no changes: openChange opened no diff, and the file must be left alone;
+  // revealing its partly visible top line would nudge the scroll
+  const input = vscode.window.tabGroups.activeTabGroup.activeTab?.input;
+  if (!(input instanceof vscode.TabInputTextDiff)) {
+    return;
+  }
+  // the file's own tab is hidden behind the diff now, so the visible editor
+  // on this uri is the diff's right side
+  const right = vscode.window.visibleTextEditors.find(
+    (e) => e.document.uri.toString() === uri
+  );
+  if (!right) {
+    return;
+  }
+  right.selections = selections;
+  const top = new vscode.Range(topLine, 0, topLine, 0);
+  right.revealRange(top, vscode.TextEditorRevealType.AtTop);
+}
+
 function activate(context) {
+  context.subscriptions.push(
+    vscode.commands.registerCommand('rgsk.openChangeHere', openChangeHere)
+  );
   context.subscriptions.push(
     vscode.commands.registerCommand('rgsk.copyFileName', async (arg) => {
       const uri = targetUri(arg);
