@@ -1,5 +1,6 @@
 const path = require('path');
 const vscode = require('vscode');
+const claudeKatex = require('./claude-katex');
 
 // The uri of whatever the command was aimed at. An explorer or tab context
 // menu passes it in; a keybinding passes nothing, so fall back to what is
@@ -77,6 +78,7 @@ async function toggleProblems() {
 }
 
 function activate(context) {
+  claudeKatex.register(context);
   context.subscriptions.push(
     vscode.commands.registerCommand('rgsk.openChangeHere', openChangeHere)
   );

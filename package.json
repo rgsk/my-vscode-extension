@@ -15,7 +15,8 @@
   "activationEvents": [
     "onCommand:rgsk.copyFileName",
     "onCommand:rgsk.openChangeHere",
-    "onCommand:rgsk.toggleProblems"
+    "onCommand:rgsk.toggleProblems",
+    "onStartupFinished"
   ],
   "contributes": {
     "commands": [
@@ -32,6 +33,11 @@
       {
         "command": "rgsk.toggleProblems",
         "title": "Toggle Problems (Squiggles)",
+        "category": "rgsk"
+      },
+      {
+        "command": "rgsk.unpatchClaudeLatex",
+        "title": "Remove LaTeX Patch from Claude Code",
         "category": "rgsk"
       }
     ],
