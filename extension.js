@@ -57,9 +57,31 @@ async function openChangeHere() {
   right.revealRange(top, vscode.TextEditorRevealType.AtTop);
 }
 
+// q = quiet: flip problems.visibility, which hides every squiggle (it
+// replaced editor.renderValidationDecorations). Global, so it never creates a
+// .vscode/settings.json; but a project that sets it keeps its own switch,
+// since its value would override the global one and the key would do nothing.
+async function toggleProblems() {
+  const config = vscode.workspace.getConfiguration('problems');
+  const info = config.inspect('visibility');
+  const shown = config.get('visibility', true);
+  const target =
+    info?.workspaceValue !== undefined
+      ? vscode.ConfigurationTarget.Workspace
+      : vscode.ConfigurationTarget.Global;
+  await config.update('visibility', !shown, target);
+  vscode.window.setStatusBarMessage(
+    shown ? 'Problems hidden' : 'Problems shown',
+    2000
+  );
+}
+
 function activate(context) {
   context.subscriptions.push(
     vscode.commands.registerCommand('rgsk.openChangeHere', openChangeHere)
+  );
+  context.subscriptions.push(
+    vscode.commands.registerCommand('rgsk.toggleProblems', toggleProblems)
   );
   context.subscriptions.push(
     vscode.commands.registerCommand('rgsk.copyFileName', async (arg) => {

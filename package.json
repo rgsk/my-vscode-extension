@@ -14,7 +14,8 @@
   "main": "./extension.js",
   "activationEvents": [
     "onCommand:rgsk.copyFileName",
-    "onCommand:rgsk.openChangeHere"
+    "onCommand:rgsk.openChangeHere",
+    "onCommand:rgsk.toggleProblems"
   ],
   "contributes": {
     "commands": [
@@ -26,6 +27,11 @@
       {
         "command": "rgsk.openChangeHere",
         "title": "Open Changes Here",
+        "category": "rgsk"
+      },
+      {
+        "command": "rgsk.toggleProblems",
+        "title": "Toggle Problems (Squiggles)",
         "category": "rgsk"
       }
     ],
