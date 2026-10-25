@@ -7,6 +7,7 @@ Personal VSCode commands, plain JS, no build step.
 | `rgsk.copyFileName` | Copies the bare file name (`task.py`). VSCode ships `copyFilePath` and `copyRelativeFilePath` but nothing for the basename. Bound to `ctrl+alt+x`. |
 | `rgsk.openChangeHere` | `git.openChange`, but the diff opens scrolled to where the file was, cursor included. Bound to `alt+d`; `git.openFile` goes back. |
 | `rgsk.toggleProblems` | Flips `problems.visibility`: every squiggle hidden or shown. VSCode ships no toggle for it. Bound to `alt+q` (quiet). |
+| `rgsk.revertWithConfirm` | Asks first, then drops unsaved edits and reloads from disk, tab kept open. Covers notebooks too, where `files.revert` does nothing (close + reopen there, which may shut down the kernel). Bound to `alt+x`. |
 
 ## Check on save
 

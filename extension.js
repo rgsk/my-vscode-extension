@@ -78,6 +78,37 @@ async function toggleProblems() {
   );
 }
 
+// files.revert behind a modal confirm: unsaved edits gone, the file reloaded
+// from disk, tab kept open. Notebook first, since a focused cell is also an
+// activeTextEditor. files.revert does nothing on a notebook, so there it is
+// revert-and-close plus reopen -- which may shut down the kernel.
+async function revertWithConfirm() {
+  const notebook = vscode.window.activeNotebookEditor;
+  const doc = notebook
+    ? notebook.notebook
+    : vscode.window.activeTextEditor?.document;
+  if (!doc || !doc.isDirty) {
+    return;
+  }
+  const name = path.basename(doc.uri.fsPath);
+  const pick = await vscode.window.showWarningMessage(
+    `Revert ${name}? Unsaved changes are lost.`,
+    { modal: true },
+    'Revert'
+  );
+  if (pick !== 'Revert') {
+    return;
+  }
+  if (notebook) {
+    await vscode.commands.executeCommand(
+      'workbench.action.revertAndCloseActiveEditor'
+    );
+    await vscode.commands.executeCommand('workbench.action.reopenClosedEditor');
+  } else {
+    await vscode.commands.executeCommand('workbench.action.files.revert');
+  }
+}
+
 function activate(context) {
   claudeKatex.register(context);
   checkOnSave.register(context);
@@ -86,6 +117,9 @@ function activate(context) {
   );
   context.subscriptions.push(
     vscode.commands.registerCommand('rgsk.toggleProblems', toggleProblems)
+  );
+  context.subscriptions.push(
+    vscode.commands.registerCommand('rgsk.revertWithConfirm', revertWithConfirm)
   );
   context.subscriptions.push(
     vscode.commands.registerCommand('rgsk.copyFileName', async (arg) => {

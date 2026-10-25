@@ -16,6 +16,7 @@
     "onCommand:rgsk.copyFileName",
     "onCommand:rgsk.openChangeHere",
     "onCommand:rgsk.toggleProblems",
+    "onCommand:rgsk.revertWithConfirm",
     "onStartupFinished"
   ],
   "contributes": {
@@ -33,6 +34,11 @@
       {
         "command": "rgsk.toggleProblems",
         "title": "Toggle Problems (Squiggles)",
+        "category": "rgsk"
+      },
+      {
+        "command": "rgsk.revertWithConfirm",
+        "title": "Revert File (Confirm)",
         "category": "rgsk"
       },
       {
