@@ -109,8 +109,76 @@ async function revertWithConfirm() {
   }
 }
 
+// djb2 over a markdown cell's source; the copy in cell-numbers-renderer.js
+// must stay in step with this one.
+function sourceKey(text) {
+  const s = text.replace(/\r\n/g, '\n').trim();
+  let h = 5381;
+  for (let i = 0; i < s.length; i++) {
+    h = ((h << 5) + h + s.charCodeAt(i)) | 0;
+  }
+  return (h >>> 0).toString(36);
+}
+
+// "cell N" in each notebook cell's status bar, 1-based, markdown cells
+// counted too -- the number to say when asking about a cell. Adding, deleting
+// or moving a cell shifts the ones below, so every add/remove refreshes them.
+// A rendered markdown cell hides its status bar, so for those the number is
+// drawn into the markdown by cell-numbers-renderer.js, which gets the
+// [{index, key}] of the notebook's markdown cells from here.
+function registerCellNumbers(context) {
+  const messaging = vscode.notebooks.createRendererMessaging(
+    'rgsk.cell-numbers'
+  );
+  const markdownCells = (notebook) =>
+    notebook
+      .getCells()
+      .filter((c) => c.kind === vscode.NotebookCellKind.Markup)
+      .map((c) => ({ index: c.index, key: sourceKey(c.document.getText()) }));
+  const send = (editor) =>
+    messaging.postMessage({ cells: markdownCells(editor.notebook) }, editor);
+  context.subscriptions.push(
+    messaging.onDidReceiveMessage(({ editor }) => send(editor)),
+    vscode.window.onDidChangeVisibleNotebookEditors((editors) =>
+      editors.forEach(send)
+    )
+  );
+  vscode.window.visibleNotebookEditors.forEach(send);
+  const changed = new vscode.EventEmitter();
+  const provider = {
+    onDidChangeCellStatusBarItems: changed.event,
+    provideCellStatusBarItems(cell) {
+      const item = new vscode.NotebookCellStatusBarItem(
+        `cell ${cell.index + 1}`,
+        vscode.NotebookCellStatusBarAlignment.Left
+      );
+      item.priority = 1000; // leftmost
+      return [item];
+    },
+  };
+  context.subscriptions.push(
+    changed,
+    vscode.notebooks.registerNotebookCellStatusBarItemProvider(
+      'jupyter-notebook',
+      provider
+    ),
+    vscode.workspace.onDidChangeNotebookDocument((e) => {
+      if (e.contentChanges.length > 0) {
+        changed.fire();
+      }
+      // any edit: a markdown cell's text is its key
+      for (const editor of vscode.window.visibleNotebookEditors) {
+        if (editor.notebook === e.notebook) {
+          send(editor);
+        }
+      }
+    })
+  );
+}
+
 function activate(context) {
   claudeKatex.register(context);
+  registerCellNumbers(context);
   checkOnSave.register(context);
   context.subscriptions.push(
     vscode.commands.registerCommand('rgsk.openChangeHere', openChangeHere)

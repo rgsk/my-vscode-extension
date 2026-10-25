@@ -61,6 +61,17 @@
         }
       ]
     },
+    "notebookRenderer": [
+      {
+        "id": "rgsk.cell-numbers",
+        "displayName": "Cell numbers on rendered markdown",
+        "entrypoint": {
+          "extends": "vscode.markdown-it-renderer",
+          "path": "./cell-numbers-renderer.js"
+        },
+        "requiresMessaging": "optional"
+      }
+    ],
     "configuration": {
       "title": "rgsk utils",
       "properties": {

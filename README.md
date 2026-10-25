@@ -9,6 +9,12 @@ Personal VSCode commands, plain JS, no build step.
 | `rgsk.toggleProblems` | Flips `problems.visibility`: every squiggle hidden or shown. VSCode ships no toggle for it. Bound to `alt+q` (quiet). |
 | `rgsk.revertWithConfirm` | Asks first, then drops unsaved edits and reloads from disk, tab kept open. Covers notebooks too, where `files.revert` does nothing (close + reopen there, which may shut down the kernel). Bound to `alt+x`. |
 
+## Cell numbers
+
+Each notebook cell's status bar (below the cell) shows `cell N`: 1-based, markdown cells counted, renumbered when cells are added, deleted or moved. Hidden if `notebook.showCellStatusBar` is `hidden`.
+
+A rendered markdown cell hides its status bar, so there [cell-numbers-renderer.js](cell-numbers-renderer.js) draws the number under the markdown itself, bottom-left like a code cell's. VSCode never tells a renderer which cell it is drawing, so each one is matched by a hash of its source against the list the extension sends; cells with identical source are told apart by their order on screen.
+
 ## Check on save
 
 [check-on-save.js](check-on-save.js) runs the command in the `rgsk.checkOnSave.command` setting on each saved `.py`, `.pyn` or `.ipynb` (path appended, in the workspace folder) and shows its `path:line:col - message` lines as warning squiggles; a notebook's `path:cell N:line:col - message` lands on that cell. A project turns it on in its `.vscode/settings.json`:
