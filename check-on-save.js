@@ -177,8 +177,33 @@ function register(context) {
         check(doc.uri);
       }
     }),
-    vscode.workspace.onDidSaveNotebookDocument((notebook) => check(notebook.uri))
+    vscode.workspace.onDidSaveNotebookDocument((notebook) => check(notebook.uri)),
+    vscode.window.onDidChangeVisibleTextEditors(checkShown),
+    vscode.window.onDidChangeVisibleNotebookEditors(checkShown),
+    vscode.workspace.onDidCloseTextDocument((doc) => shown.delete(doc.uri.fsPath)),
+    vscode.workspace.onDidCloseNotebookDocument((n) => shown.delete(n.uri.fsPath))
   );
+
+  // and on open: a file checked the first time it shows in an editor, not on
+  // every tab switch back to it (a save does those). Visible editors, not
+  // onDidOpenTextDocument, which also fires for files only opened in the
+  // background -- by a language server, or publish's own openTextDocument.
+  // A notebook's cells come as vscode-notebook-cell editors; the notebook
+  // editor covers them
+  const shown = new Set(); // file paths checked since they were opened
+  function checkShown() {
+    const uris = [
+      ...vscode.window.visibleTextEditors.map((e) => e.document.uri),
+      ...vscode.window.visibleNotebookEditors.map((e) => e.notebook.uri),
+    ];
+    for (const uri of uris) {
+      if (uri.scheme === 'file' && !shown.has(uri.fsPath)) {
+        shown.add(uri.fsPath);
+        check(uri);
+      }
+    }
+  }
+  checkShown();
 }
 
 const REDUNDANT = /^\w+: .+ is inferred anyway$/;

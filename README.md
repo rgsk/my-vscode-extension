@@ -17,7 +17,7 @@ A rendered markdown cell hides its status bar, so there [cell-numbers-renderer.j
 
 ## Check on save
 
-[check-on-save.js](check-on-save.js) runs the command in the `rgsk.checkOnSave.command` setting on each saved `.py`, `.pyn` or `.ipynb` (path appended, in the workspace folder) and shows its `path:line:col - message` lines as warning squiggles; a notebook's `path:cell N:line:col - message` lands on that cell. A project turns it on in its `.vscode/settings.json`:
+[check-on-save.js](check-on-save.js) runs the command in the `rgsk.checkOnSave.command` setting on each saved `.py`, `.pyn` or `.ipynb`, and on each one opened (the first time it shows in an editor, startup included) (path appended, in the workspace folder) and shows its `path:line:col - message` lines as warning squiggles; a notebook's `path:cell N:line:col - message` lands on that cell. A project turns it on in its `.vscode/settings.json`:
 
 ```json
 "rgsk.checkOnSave.command": "uv run annotation-check"
