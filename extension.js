@@ -1,5 +1,6 @@
 const path = require('path');
 const vscode = require('vscode');
+const checkOnSave = require('./check-on-save');
 const claudeKatex = require('./claude-katex');
 
 // The uri of whatever the command was aimed at. An explorer or tab context
@@ -79,6 +80,7 @@ async function toggleProblems() {
 
 function activate(context) {
   claudeKatex.register(context);
+  checkOnSave.register(context);
   context.subscriptions.push(
     vscode.commands.registerCommand('rgsk.openChangeHere', openChangeHere)
   );

@@ -54,6 +54,17 @@
           "group": "1_copypath@100"
         }
       ]
+    },
+    "configuration": {
+      "title": "rgsk utils",
+      "properties": {
+        "rgsk.checkOnSave.command": {
+          "type": "string",
+          "default": "",
+          "scope": "resource",
+          "markdownDescription": "Checker run on each saved `.py`, `.pyn` or `.ipynb`, the file's path appended, in the workspace folder; its `path:line:col - message` lines (a notebook's `path:cell N:line:col - message`) show as warning squiggles. Empty: off. E.g. `uv run annotation-check`."
+        }
+      }
     }
   }
 }
