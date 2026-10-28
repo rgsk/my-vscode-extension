@@ -13,7 +13,7 @@ Personal VSCode commands, plain JS, no build step.
 
 Each notebook cell's status bar (below the cell) shows `cell N`: 1-based, markdown cells counted, renumbered when cells are added, deleted or moved. Hidden if `notebook.showCellStatusBar` is `hidden`.
 
-A rendered markdown cell hides its status bar, so there [cell-numbers-renderer.js](cell-numbers-renderer.js) draws the number under the markdown itself, bottom-left like a code cell's. VSCode never tells a renderer which cell it is drawing, so each one is matched by a hash of its source against the list the extension sends; cells with identical source are told apart by their order on screen.
+A rendered markdown cell hides its status bar, so there [cell-numbers-renderer.js](cell-numbers-renderer.js) draws the number above the markdown itself, top-left, under a thin separator line. VSCode never tells a renderer which cell it is drawing, so each one is matched by a hash of its source against the list the extension sends; cells with identical source are told apart by their order on screen.
 
 ## Check on save
 

@@ -76,13 +76,14 @@ export async function activate(ctx) {
   markdownIt?.extendMarkdownIt((md) => {
     md.core.ruler.push('rgsk_cell_number', (state) => {
       const span = new state.Token('html_block', '', 0);
-      // bottom-left in the status bar's font, like a code cell's label, in
-      // the markdown's own text colour
+      // top-left in the status bar's font, in the markdown's own text colour,
+      // under a rule in the editor's separator colour
       span.content =
         `<span class="rgsk-cell-n" data-key="${key(state.src)}" ` +
-        'style="display: block; margin-top: 8px; ' +
+        'style="display: block; margin-bottom: 8px; padding-top: 4px; ' +
+        'border-top: 1px solid var(--vscode-editorWidget-border, #8884); ' +
         'font-size: 12px; font-family: var(--vscode-font-family);"></span>\n';
-      state.tokens.push(span);
+      state.tokens.unshift(span);
       // the span reaches the DOM only after render returns
       setTimeout(relabel, 0);
     });
